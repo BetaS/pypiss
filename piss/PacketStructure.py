@@ -1,5 +1,6 @@
 # encoding; utf-8
 
+from enum import Enum
 from piss.types import HMAC, IPv4
 
 __author__ = "BetaS"
@@ -10,7 +11,7 @@ def calc_crc(args):
     return lambda a: calc_crc32(bytearray(reduce(lambda x, y: x+y, map(lambda x: a[x], args))))
 
 
-class field_type:
+class field_type(Enum):
     bit     = {"struct":"?", "bits":1, "type": bool}
     char    = {"struct":"c", "bits":8, "type": bytes}
     byte    = {"struct":"B", "bits":8, "type": int}
@@ -109,16 +110,18 @@ class field:
         self._val = val
         return self
 
+    def __str__(self):
+        return {"name": self._name, "type": self._type}
+
 
 class PacketHeader:
     _fields = []
 
     def __init__(self, data):
         cls = self.__class__
-        #for f in self.__class__._fields:
 
-        print(self._fields)
-        print(cls._fields)
+        for f in cls._fields:
+            print(f._name)
 
         pass
 

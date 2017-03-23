@@ -31,3 +31,7 @@ class IPv4(object):
         d = self.__val&0xFF
 
         return "%d.%d.%d.%d"%(a,b,c,d)
+
+    def __int__(self):
+        return self.__val
+    

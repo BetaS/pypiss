@@ -23,6 +23,7 @@ class field_type(Enum):
     u_long  = {"struct":"Q", "bits":64, "type": int}
     float   = {"struct":"f", "bits":32, "type": float}
     double  = {"struct":"d", "bits":64, "type": float}
+    bytes   = {"struct":"p", "bits":8, "type": bytearray}
     str     = {"struct":"str", "bits":8, "type": str}
     ipv4    = {"struct":"4B", "bits":32, "type": IPv4}
     hmac    = {"struct":"6B", "bits":48, "type": HMAC}
@@ -38,42 +39,52 @@ class field:
 
     def bit(self):
         self._type = field_type.bit
+        self._val = False
         return self
 
     def byte(self):
         self._type = field_type.byte
+        self._val = 0
         return self
 
     def short(self):
         self._type = field_type.short
+        self._val = 0
         return self
 
     def u_short(self):
         self._type = field_type.u_short
+        self._val = 0
         return self
 
     def int(self):
         self._type = field_type.int
+        self._val = 0
         return self
 
     def u_int(self):
         self._type = field_type.u_int
+        self._val = 0
         return self
 
     def long(self):
         self._type = field_type.long
+        self._val = 0
         return self
 
     def u_long(self):
         self._type = field_type.u_long
+        self._val = 0
         return self
 
     def float(self):
         self._type = field_type.float
+        self._val = 0.0
         return self
 
     def double(self):
         self._type = field_type.double
+        self._val = 0.0
         return self
 
     def bits(self, size=0):
@@ -100,6 +111,7 @@ class field:
 
     def hmac(self):
         self._type = field_type.hmac
+        self._val = 0.0
         return self
 
     def ipv4(self):
@@ -121,7 +133,8 @@ class PacketHeader:
         cls = self.__class__
 
         for f in cls._fields:
-            print(f._name)
+            val = data[f._name] if f._name in data else f._val
+            exec("self."+f._name+" = val")
 
         pass
 
@@ -130,6 +143,14 @@ class PacketHeader:
 
     def check_validity(self):
         pass
+
+    def __str__(self):
+        cls = self.__class__
+        val = {}
+        for f in cls._fields:
+            exec("val['"+f._name+"'] = self."+f._name)
+
+        return str(val)
 
 
 class Packet:

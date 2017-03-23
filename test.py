@@ -10,7 +10,7 @@ class EthernetHeader(PacketHeader):
     _fields = [
         field("dst").hmac(),
         field("src").hmac(),
-        field("ether_type").u_short().val(0x0800),
+        field("type").u_short().val(0x0800),
         field("payload").bytes(),   # if len is 0 -> obtain rest of bytes
         field("crc").int().val(calc_crc(["payload"]))
     ]
@@ -55,4 +55,5 @@ class IPV4Packet(Packet):
 
 if __name__ == "__main__":
     #EthernetFrame(data="")
-    print(IPV4Packet(hmac("ff:ff:ff:ff:ff:ff"), hmac("ff:ff:ff:ff:ff:ff"), "172.31.0.1", "172.31.0.2", "Hello Piss!").build())
+    packet = IPV4Packet(hmac("ff:ff:ff:ff:ff:ff"), hmac("ff:ff:ff:ff:ff:ff"), "172.31.0.1", "172.31.0.2", "Hello Piss!")
+    print(packet.eth)
